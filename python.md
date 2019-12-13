@@ -2535,6 +2535,7 @@
 			</pre>
 			- 案例，解决上边的为题
 				- 代码中的演示器会被结束，是因为主线程已经结束，解决办法是，让主线程实时监测，如果没有执行完的代码，要实时监测执行
+				- thread.start_new_thread(loop1,())创建线程，后边的括号为参数
 			<pre>
 			import _thread as thread
 			import time			
@@ -2550,12 +2551,114 @@
 			    print('main01:', time.ctime())
 			    thread.start_new_thread(loop1,()) #方法、方法的参数
 			    thread.start_new_thread(loop2,())
-			    print('main02:', time.ctime())			
+			    print('main02:', time.ctime())
 			if __name__=='__main__':
 			    main()
 			    while True:
 			        time.sleep(1)
 			</pre>
+			- threading使用
+				- threading.Thread生成Thread实例
+					- 1. t=threading.Thread(target=xxx,args=(xxx,)),target是执行多线程的函数，args是函数的参数，没有参数为空括号，这里这里只是实例化
+					- 2. t.start()启动多线程
+					- 3. t.join()等待程序执行完成
+				- 案例，不使用json
+				<pre>
+				import threading
+				import time				
+				def loop1():
+				    print('loop1-01:', time.ctime())
+				    time.sleep(4)
+				    print('loop1-02:', time.ctime())				
+				def loop2():
+				    print('loop2-01:', time.ctime())
+				    time.sleep(4)
+				    print('loop2-02:', time.ctime())				
+				def main():
+				    print('main01:', time.ctime())
+				    t1=threading.Thread(target=loop1, args=())
+				    t1.start()
+				    t2=threading.Thread(target=loop2, args=())
+				    t2.start()
+				    print('main02:', time.ctime())
+				if __name__=='__main__':
+				    main()
+				    while True:
+				        time.sleep(3)
+				</pre>
+					- 这里的while True会每三秒执行一次，无论程序有没有执行完，都会3秒监控一次
+				- 用join
+					- join就是当前的线程执行完成后再执行后边的程序，类似于javascript中的ajax的同步
+				<pre>
+				import threading
+				import time				
+				def loop1():
+				    print('loop1-01:', time.ctime())
+				    time.sleep(4)
+				    print('loop1-02:', time.ctime())				
+				def loop2():
+				    print('loop2-01:', time.ctime())
+				    time.sleep(4)
+				    print('loop2-02:', time.ctime())
+				def main():
+				    print('main01:', time.ctime())
+				    t1=threading.Thread(target=loop1, args=())
+				    t1.start()
+				    t2=threading.Thread(target=loop2, args=())
+				    t2.start()
+				    t1.join()
+				    t2.join()
+				    print('main02:', time.ctime())
+				if __name__=='__main__':
+				    main()
+				</pre>
+				- 守护线程	daemon
+					- 就是主线程断了，主线程下边的子线程也会断掉
+					- 不是特别重要的线程可以设置为守护线程
+					- 守护线程是否能正常运行跟环境有关系
+					- 非守护线程案例
+					<pre>
+					import time
+					import threading
+					def fun():
+					    print('this is fun')
+					    time.sleep(3)
+					    print('fun is end')
+					print('this is main')
+					t=threading.Thread(target=fun,args=())
+					t.start()
+					time.sleep(3)
+					print('main is end')
+					</pre>
+					- 守护线程案例，当主线程进入睡眠状态子线程就就不再执行
+					<pre>
+					import time
+					import threading
+					def fun():
+					    print('this is fun')
+					    time.sleep(3)
+					    print('fun is end')
+					print('this is main')
+					t=threading.Thread(target=fun,args=())
+					t.setDaemon(True)
+					t.start()
+					time.sleep(3)
+					print('main is end')
+					</pre>
+				- 线程
+					- threading.enumerate()当前正在运行的线程
+					<pre>
+					threading.currentThread返回当前相称变量
+					threading.activeCount返回当前运行的线程的list
+					thr=threading.enumerate()
+					thr.setName() #线程名字
+					thr.getName()
+					</pre>
+
+
+
+
+
 
 
 
@@ -2636,5 +2739,5 @@
 <br>
 <br>
 <hr/>
-# 课时44#
+# 课时45#
 <hr/>
