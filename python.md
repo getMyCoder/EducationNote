@@ -2654,7 +2654,81 @@
 					thr.setName() #线程名字
 					thr.getName()
 					</pre>
-
+	- 共享变量
+		- 有冲突、矛盾
+		- 当多个线程同时访问一个变量的时候，会产生共享变量的问题
+		<pre>
+		import threading
+		sum = 0
+		index = 10000		
+		def add():
+		    global sum, index
+		    for i in range(1, index):
+		        sum += 1
+		def less():
+		    global sum, index
+		    for j in range(1, index):
+		        sum -= 1
+		if __name__ == '__main__':
+		    print('start-sum...{0}'.format(sum))
+		    t1=threading.Thread(target=add,args=())
+		    t2=threading.Thread(target=less,args=())
+		    t1.start()
+		    t2.start()
+		    t1.join()
+		    t2.join()
+		    print('end-sum...{0}'.format(sum))
+		</pre>
+		- 解决办法
+			- 锁
+				- 是一个标志，表示一个线程在占用一些资源
+				- 使用方法
+					- 创建一个锁 lock=threading.lock()
+					- 上锁 lock.acquire()
+					- 使用资源
+					- 取消锁，释放锁，如果不取消，后边使用该变量的地方无法使用 lock.release()
+					- 多线程共同使用同一个变量的时候，需要把该变量锁住
+					- 锁是权限
+					- 个人理解，在使用锁的地方，可以认为是把当前的变量暂时存储在内存中，在该变量再次调用的时候，在内存中再次调用该值，进行相应的计算；多个线程中，每个线程中都会把当前的值暂时的存储到内存中，在调用的时候再次在内存中取值
+					- 就是同一时刻只有一个方法在使用该变量
+					- 线程安全
+						- 就是一个变量，对于多线程来讲，不用加锁也不会引起任何问题，称为线程安全（只读）
+						- 线程不安全变量:list,set,dict
+						- 线程安全类型：queue
+					<pre>
+					import threading
+					sum=0
+					index=1000
+					lock=threading.Lock()
+					def add():
+					    global sum,index
+					    for i in range(1,index):
+					        lock.acquire() #锁住变量
+					        sum+=1
+					        print('sumAdd...{0}'.format(sum))
+					        lock.release() #释放变量
+					def less():
+					    global sum,index
+					    for j in range(1,index):
+					        lock.acquire() #锁住变量
+					        sum-=1
+					        print('sumLess...{0}'.format(sum))
+					        lock.release() #释放变量
+					if __name__=='__main__':
+					    t1=threading.Thread(target=add,args=())
+					    t2=threading.Thread(target=less,args=())
+					    t1.start()
+					    t2.start()
+					    t1.json()
+					    t2.json()
+					</pre>
+			- 生产者消费问题
+				- 一个模型，栈入栈出，消息队列
+				- queue一种数据结构，先进先出
+			- 死锁
+				- 两把锁同时启用产生的矛盾
+			- 信号灯
+			# 课时46-47多线程(开始1：19:32)待补充......#
 
 
 
@@ -2739,5 +2813,5 @@
 <br>
 <br>
 <hr/>
-# 课时45#
+# 课时46 #
 <hr/>
