@@ -2729,6 +2729,33 @@
 				- 两把锁同时启用产生的矛盾
 			- 信号灯
 			# 课时46-47多线程(开始1：19:32)待补充......#
+#### 协程 ####
+- 迭代器
+	- 可迭代(Iterable):直接作用于for循环的变量（可循环的变量）
+		- list是可以迭代的，但是不是迭代器
+	- 迭代器(Iterator):可作用于for循环，也可以被next使用
+		- range是迭代器
+	- 判断时候是可迭代的from collections import Iterable
+		- isinstance(A,Iterable)
+	- 判断是否是一个迭代器from collections import Iterator
+		- isinstance(A,Iterator)
+	- collections已被弃用，改为collections.abc
+- 生成器
+	- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2813,5 +2840,5 @@
 <br>
 <br>
 <hr/>
-# 课时46 #
+# 课时48 20:40 #
 <hr/>
