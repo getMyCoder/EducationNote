@@ -2741,9 +2741,82 @@
 		- isinstance(A,Iterator)
 	- collections已被弃用，改为collections.abc
 - 生成器
-	- 
-
-
+	- 一边循环一边计算下一个元素的算法
+	- 需要满足三个条件
+		- 每次调用都生产出for循环需要的下一个元素
+		- 如果到达最后一个，报错StopIteration异常
+		- 可以被next函数调用
+	- 如何制作一个生成器
+		- 直接使用
+		<pre>
+		L=[x*x for x in range(5)] #生成列表
+		G=(x*x for x in range(5)) #生成器 generator
+		print(type(L))
+		print(type(G))
+		</pre>
+		- 如果函数中包含yield，则这个函数就是生成器
+		- next调用函数，遇到yeld返回
+		- 个人理解：调用生成器的时候需要用next调用每一个步，每一个yield可以认为就是一个return，下次再次调用这个生成器的时候会在上次调动的位置上再往后执行(理解上可以间接的认为是断点)
+		<pre>
+		def odd():
+		    print('01')
+		    yield '01'
+		    print('02')
+		    yield '02'
+		    print('03')
+		    yield '03'
+		g=odd()
+		one=next(g)
+		print(one)
+		two=next(g)
+		print(two)
+		</pre>
+		- 生成器可以使用for循环调用
+		- 正常情况会报StopIteration异常
+		<pre>
+		def max(val):
+		    n,a,sum=0,0,1
+		    while n < val:
+		        yield sum
+		        a,sum=sum,a+sum
+		        n+=1
+		    return None
+		m=max(5)
+		for i in m:
+		    print(i) 
+		</pre>
+- 协程
+	- 解决高线程的方法是协程，多线程相互切换会耗用较多的资源
+	- 实现的线程比较好的包有asyncio,tornado,gevent
+	- 原理：
+		- 每个服务中的每个程序在执行到yield的时候会结果返回出来，然后把执行完的程序卸载掉，这样很占用很小的资源
+	- 定义
+		- 就是允许程序在不同位置进行暂停或是执行
+		- 也可以理解成一个生成器
+	- 实现
+		- yield返回
+		- send调用，就等于next()
+		<pre>
+		def A():
+		    print('01')
+		    x=yield  #这里的没有返回值，默认是None，并且这里的x是在调用出的send中传来的值进行接收
+		    print('02->',x) #这里的x就是send传递过来的值
+		
+		# 主线程
+		a=A()
+		# 调用
+		next(a)
+		a.send('this is chexiao')
+		</pre>
+		- 协程存在四种状态
+			- 开始
+			- 解析
+			- 执行yield
+			- 完成
+	- 协程终止
+		- 报异常是一种方法
+		- 发送一个参数，进行判断，程序时候终止
+		- yield from
 
 
 
