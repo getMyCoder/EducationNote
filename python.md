@@ -2817,16 +2817,158 @@
 		- 报异常是一种方法
 		- 发送一个参数，进行判断，程序时候终止
 		- yield from
-
-
-
-
-
-
-
-
-
-
+			- 调用协程为了得到返回值，协程必须正常终止
+			- 生成器正常终止StopIteration异常，异常对象的value保存返回值
+			- yield from从内部捕获StopIteration异常
+			- 两种写法
+			<pre>
+			def A():
+			    for i in 'abc':
+			        yield i
+			print(list(A()))
+			def B():
+			    yield from 'abc' #这种方式优于上边的这种写法
+			print(list(B()))
+			</pre>
+	- 委派生成器
+		- 包含yield from表达式的生成器
+		- 委派生成器在yield from出停止，并把数据发送给生成器
+		- 子生成器把产出的值发给调用方
+		- 子生成器最后会抛出StopIteration异常
+	- asyncio
+		- 本身是一个消息循环
+		- 步骤
+			- 创建消息循环
+			- 把协程导入
+			- 关闭
+			- 注意协程的使用方法
+				- @asyncio.coroutine在协程方法之前
+				- 协程的延时asyncio.sleep()
+				- 启动asyncio.get_event_loop()
+				- 定义任务是个数组
+				- loop.run_until_complete(asyncio.wait(tasks))，等待循环完成，等待的是个数组
+				- 不要忘记关闭消息循环
+			- 消息循环概念指的是程序的执行程度
+			<pre>
+			import threading
+			import asyncio
+			# 使用协程
+			@asyncio.coroutine
+			def hello():
+			    print('hello01->',threading.currentThread())
+			    print('hello02->',threading.currentThread())
+			    yield from asyncio.sleep(5)
+			    print('hello03->', threading.currentThread())
+			    print('hello04->', threading.currentThread())
+			@asyncio.coroutine
+			def world():
+			    print('world01->', threading.currentThread())
+			    print('world02->', threading.currentThread())
+			    yield from asyncio.sleep(3)
+			    print('world03->', threading.currentThread())
+			    print('world04->', threading.currentThread())
+			# 启动消息循环
+			loop=asyncio.get_event_loop()
+			# 定义任务
+			tasks=[hello(),world()]
+			# asyncio使用wait等待task执行完毕
+			loop.run_until_complete(asyncio.wait(tasks))
+			# 关闭消息循环
+			loop.close()
+			</pre>
+	- async and await
+		- 为了更好的表示异步io
+		- 协程代码更简洁
+			- async代替@asyncio.coroutine
+			- await代替yield from
+			<pre>
+			import threading
+			import asyncio
+			# 使用协程
+			async def hello():
+			    print('hello01->',threading.currentThread())
+			    print('hello02->',threading.currentThread())
+			    await asyncio.sleep(5)
+			    print('hello03->', threading.currentThread())
+			    print('hello04->', threading.currentThread())
+			async def world():
+			    print('world01->', threading.currentThread())
+			    print('world02->', threading.currentThread())
+			    await asyncio.sleep(3)
+			    print('world03->', threading.currentThread())
+			    print('world04->', threading.currentThread())
+			# 启动消息循环
+			loop=asyncio.get_event_loop()
+			# 定义任务
+			tasks=[hello(),world()]
+			# asyncio使用wait等待task执行完毕
+			loop.run_until_complete(asyncio.wait(tasks))
+			# 关闭消息循环
+			loop.close()
+			</pre>
+	- aiohttp
+		- asyncio实现单线程的并发io，在客户端用处不大
+	- concurrent.futures
+		- 利用multiprocessiong实现真正的并行机选
+		- 但是前提是需要电脑有多个内核
+		- 每个子进程使用一个内核
+	- current的map
+		- map(fn,\*iterables,timeout=None)
+	- Future
+		- 简单理解：主线程在运行的时候，辅助线程去做一些帮助主线程运行的事情
+#### 格式化文件 ####
+- 结构化文件存储
+	- xml,json
+	- 为了解决不同设备之间信息交换
+	- xml文件
+		- xml和html
+			- xml侧重于数据
+			- html侧重于页面
+		- 格式
+		<pre>
+		< ? xml version="1.0" ? >
+		< temlop >
+			hello world
+		< temlop >
+		</pre>
+	- 命名空间
+		- 防止xml命名冲突
+		- 主要应用是读取的时候
+			- 主要分为两部分SAX,DOM
+			- SAX(Simple API for XML)
+				- 特点 
+					- 快
+					- 流式读取
+			- DOM爬虫中用的多
+				- minidom
+					- minidom.parse(filename)加载的xml文件
+					- doc.documentElement()获取节点
+					- node.getAttribute()获取属性
+					- node.getElementByTaName()
+					- node.childNodes得到所有孩子子节点
+					- ......
+					- 类似javascript获取dom的信息
+				- etree
+					- 以树形结构表示xml
+					- root.getiterator得到可迭代的node集合
+					- find()找到指定的node_name
+					- root.findall()返回多个node_name
+		- xml文件写入
+			- 更改
+				- ele.set:修改属性
+				- ele.append添加子元素
+				- ele.remove删除元素
+			- 生成创建
+				- SubElement
+				- minidom
+				- etree
+	- json
+		- json和python格式的对应
+			- 字符串：字符串
+			- 数字：数字
+			- 队列：list
+			- 对象：dict
+			- 布尔值：布尔值
 
 
 
@@ -2913,5 +3055,5 @@
 <br>
 <br>
 <hr/>
-# 课时48 20:40 #
+# 课时49 1:14:54 #
 <hr/>
