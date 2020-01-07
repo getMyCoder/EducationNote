@@ -2969,10 +2969,162 @@
 			- 队列：list
 			- 对象：dict
 			- 布尔值：布尔值
-
-
-
-
+		- python包
+			- json包
+			- json和python对象的装换
+				- json.dumps()对数据编码,把python格式转为json格式
+				- json.loads()对数据解码，把json格式转为python格式
+				<pre>
+				import json
+				student={
+				    "name":"张三",
+				    "age":20,
+				    "dress":"山东省济南市历城区"
+				}
+				print(type(student))
+				stu_json=json.dumps(student) #转为json格式
+				print(stu_json)
+				stu_dict=json.loads(stu_json) #转为dict格式
+				print(stu_dict)
+				</pre>
+			- python读取json文件
+				- json.dump()把内容写入文件
+				- json.load()把json文件内容读入python
+				<pre>
+				import json				
+				data = {
+				    "name": "hello world",
+				    "age": 30,
+				    "dress": "shandongsheng jinanshi lichengqu"
+				}				
+				with open('fileJson.json', 'w') as f: #以写入的方式打开
+				    json.dump(data, f)                #把数据写入文件
+				with open('fileJson.json', 'r') as f:
+				    print(json.load(f))                #读取json文件
+				</pre>
+- 正则表达式
+	- 正则和xPath的区别
+		- 正则是对文本查找
+		- xPath是对xml查找
+	- .(点好)，表示任意一个字符
+	- []匹配中括号中的任意字符（比如某一个单词的字母都在中括号中则为True）
+	- \d表示任意一个数字
+	- \D表示出了数字意外的
+	- \s表示空格
+	- \S表示出了空格意外的
+	- \w单词字符，a-z,A-Z,0-9,_
+	- \W除了\w以外的
+	- *表示重复的次数
+	- +表示前边内容至少出现一次
+	- ？前面出现的内容出现0次或是一次
+	- {m,n}表示出现的最少次数是m，最多是n次
+	- ^表示从头部开始
+	- $表示到结尾
+	- \b
+	- ()对内容进行分组
+	- \A只匹配字符串的开头
+	- \Z只匹配字符串的末尾
+	- |左右任意一个
+	- 正则的使用
+		- 需要导入re包
+		- 使用compile将正则表以为pattern对象
+		- 通过pattern对象提供一些方法进行查询和匹配，返回一个Match，match第一个字符匹配不正确返回false
+	- 常用函数
+		- group()获得一个或是多个分组匹配的字符串
+		- start获取分组匹配的字符串在整个字符串中的起始位置
+		- end获取分组匹配的字符串在整个字符串中的结束位置
+		- span返回的结构技术
+		<pre>
+		import re
+		p=re.compile(r'\d+',re.l) #re.l不区分大小写
+		str='hello456world123'
+		pEnd=p.match(str,5,7)
+		print(pEnd[0]) #match
+		print(pEnd.start(0)) #start
+		print(pEnd.end(0))  #end
+		</pre>
+		- search(str,start,end)字符串查找
+		- findall查找所有
+		- finditer查找，返回一个iter结果
+		<pre>
+		import re
+		a=re.compile(r'\d+')
+		str='hello123world456'
+		b=a.search(str)
+		print(b.group())
+		print(a.findall(str))
+		</pre>
+		- sub替换
+			- sub(rep1,str)
+			<pre>
+			import re
+			a=re.compile(r'\d+')
+			str='hello123world456'
+			b=a.sub(r'<-this->',str)
+			print(b)
+			</pre>
+		- 匹配中文
+			- 检索中文
+			- [\u4e00-\u9fa5]
+			- 注意匹配的字符串用u
+				- u'你好，世界，hello world'
+			<pre>
+			import re
+			title=u'你好，世界，hello world'
+			a=re.compile(r'[\u4e00-\u9fa5]')
+			res=a.findall(title)
+			print(res)
+			</pre>
+		- *表示贪婪
+			- 尽可能多的匹配
+			- 非贪婪用？，找到符合条件的最小内容
+			- 正则默认使用贪婪模式
+#### xPath和net ####
+- xPath
+	- 在xml中查找信息的，对xml进行循环遍历
+	- xPath工具
+		- 编辑工具XMLQuire
+		- chrome插件XPath Helper
+		- Firefox插件，XPath Chercker
+	- 选取节点
+		- nodename选取此节点的所有子节点
+		- /从根节点开始选取
+		- //选取节点，不考虑位置 school//age
+		- .选取当前的节点
+		- ..选取当前节点的父节点
+		- @选取属性
+			- age[@data]
+	- xPath中查找一般按照路径的方式查找
+		- school/teacher返回teacher
+	- 谓语
+		- /school/student[0]选取第一个子节点
+		- /school/student[last()]选取最后一个子节点
+		- /school/student[last()-1]选取倒数第二个子节点
+		- //student[@data]选取子节点中带有data属性的节点
+	- 主要应用
+		- 暂时想到的是后台的配置（端口、文件、路径，接口等）
+	- xPath操作
+		- |：或者
+			- //student | //teacher
+		- &：并且
+			- //student & //teacher
+- net网络
+	- 网络模型
+		- 七层模型
+			- 物理层
+			- 数据链路层
+			- 网络层
+			- 传输层
+			- 会话层
+			- 表示层
+			- 应用层
+		- 实际应用的四层
+			- 链路层
+			- 网络
+			- 传输层
+			- 应用层
+	- 每一层都有相关的协议
+	- TCP/IP协议
 
 
 
@@ -3055,5 +3207,5 @@
 <br>
 <br>
 <hr/>
-# 课时49 1:14:54 #
+# 课时54 0:0 #
 <hr/>
