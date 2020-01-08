@@ -3125,13 +3125,183 @@
 			- 应用层
 	- 每一层都有相关的协议
 	- TCP/IP协议
-
-
-
-
-
-
-
+#### ftp ####
+- SOCKET编程
+	- 分为UDP和TCP
+	- UDP是只是发送消息，不需要建立通道
+		- 客户端和服务端的信息传递
+		- 流程
+			- 用到的包import socket
+			- 创建socket服务socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+				- socket.AF_INET使用ipv4规则
+				- socket.SOCK_DGRAM使用UDP规则
+			- 绑定ip和port
+				- ip地址是一个tuple类型(ip,port)
+				- sock.bind()
+			- 接受访问
+				- sock.recvfrom(500)返回值是一个tuple，参数是缓冲区的大小
+			- 发送过来的数据是bytes格式，需要解码
+				- data.decode()默认是utf8
+			- 给对方反馈的消息
+				- 消息需要编码成bytes格式
+				- data=rsp.encode()
+				- sock.sendto(data,addr)解码完成后发送
+		- 服务端代码
+		<pre>
+		import socket
+		def serverSocket():
+		    # 建立socket
+		    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+		
+		    # 绑定ip和port，对方的ip和port
+		    addr = ('127.0.0.1', 7852)
+		    sock.bind(addr)
+		
+		    # 接受对方消息
+		    data, addr = sock.recvfrom(500) #这里返回两个对象
+		    print(data, addr)
+		
+		    # 接受到的数据解码
+		    text = data.decode()
+		
+		    # 给对方返回消息
+		    rsp = 'hello world'
+		
+		    # 把发送的信息编码
+		    data = rsp.encode()
+		    print(data)
+		    sock.sendto(data, addr)
+		
+		if __name__ == '__main__':
+		    print('start...')
+		    serverSocket()
+		    print('end...')
+		</pre>
+		- 客户端代码
+		<pre>
+		import socket
+		def clientSocket():
+		    # 创建socket
+		    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+		
+		    # 发送的消息
+		    text = 'this is clientServer'
+		
+		    # 把要发送的消息转为bytes格式
+		    data = text.encode()
+		
+		    # 发送
+		    sock.sendto(data, ('127.0.0.1', 7852))
+		
+		    # 接受返回的消息
+		    data, addr = sock.recvfrom(200)
+		
+		    # 返回的消息解码
+		    data = data.decode()
+		    print(data)
+		if __name__ == '__main__':
+		    clientSocket()
+		</pre>
+		- 客户端和服务端的ip和port是对应的
+			- 实际应用是根据客户端或是服务端接受到的消息进行相应的反馈
+			- 聊天室
+			- 例如：
+				- A,B两人的QQ是两个客户端一个服务端server
+				- 服务端是A，B两个人的链接
+				- A往服务端发送消息，server接受后，把获取到的信息返回给B
+				- B接受消息后再去回复，把消息发送到server，server接受到B的消息后，在把消息反馈该A
+				- A接受消息
+				- ....
+		- 服务器程序改造，socket一直处于运行状态
+			- while True:
+	- TCP
+		- 需要建立通道进行数据的传递
+		- 传送之前建立链接，通过连链接通道进行数据的传递
+		- server服务端
+			- 建立sock
+				- sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+			- 绑定ip和port
+				- addr = ('127.0.0.1', 8998)
+				- sock.bind(addr)
+			- 监听
+				- sock.listen()
+			- 建立通道
+				- 服务器端死循环查看数据
+				- skt,addr=sock.accept()建立通道，返回的是两个对象
+					- 这里返回的skt是一个新的socket对象
+				- 接受消息msg=sock.recv(500)，参数500表示bufferSize
+				- 得到的数据进行转码data.decode()
+				- 回馈消息
+					- sock.send(str.encode())
+				- 关闭连接
+					- 就是拆除连接通道
+					- 注意的是这里的关闭的链接是accept返回出来的socket的对象，而不是服务端创建的socket
+		- client客户端
+		- 服务端代码
+		<pre>
+		import socket
+		
+		def TCPServerSocket():
+		    # 建立socket
+		    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		
+		    # 绑定ip和port，对方的ip和port
+		    addr = ('127.0.0.1', 8999)
+		    sock.bind(addr)
+		
+		    # 监听
+		    sock.listen()
+		
+		    # 服务器循环查看
+		    while True:
+		        # 建立连接通道
+		        # accept返回两个对象
+		        skt, addr = sock.accept()
+		
+		        # 接受消息
+		        msg = skt.recv(500)
+		
+		        # 接受的消息转码
+		        msg = msg.decode()
+		        print(msg)
+		
+		        # 回馈消息
+		        rst = 'I accept message,this is server'
+		        skt.send(rst.encode())
+		
+		        # 关闭连接
+		        skt.close()
+		
+		if __name__ == '__main__':
+		    print('start...')
+		    TCPServerSocket()
+		    print('end...')
+		</pre>
+		- 客户端代码
+		<pre>
+		import socket
+		
+		def TCPClientSocket():
+		    # 创建socket
+		    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		
+		    # 建立连接
+		    addr = ('127.0.0.1', 8999)
+		    sock.connect(addr)
+		
+		    # 发送的消息
+		    text = 'I send message,this is clientServer'
+		    data = text.encode()
+		    sock.send(data)
+		
+		    # 接受反馈的消息
+		    msg = sock.recv(500)
+		    print(msg.decode())
+		    sock.close()
+		
+		if __name__ == '__main__':
+		    TCPClientSocket()
+		</pre>
 
 
 
