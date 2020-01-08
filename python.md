@@ -3302,10 +3302,193 @@
 		if __name__ == '__main__':
 		    TCPClientSocket()
 		</pre>
-
-
-
-
+- FTP
+	- 文件传送协议
+	- 用于传送文件
+#### Mail ####
+- 工作流程
+	- MUA邮件用户代理
+	- MTA邮件传输代理
+	- MDA邮件投递代理
+- 编写程序
+	- 发送
+		- MUA->MTA
+	- 接受
+		- MDA-MUA
+	- SMTP协议发送邮件
+		- 使用email构建邮件
+		- 使用smtplib发送邮件
+		- 流程
+			- 包
+				- import smtplib
+				- from email.mime.text import MIMEText
+				- MIMEText参数
+				- 邮件内容
+				- MIME子类型 plain
+				- 邮件的编码格式
+			- 发送的内容
+				- msg=MIMEText('hello world','plain','utf-8')
+			- 发送的地址
+				- from_addr='123.qq.com
+			- 密码
+				- 授权码
+			- 接受地址
+				- to_addr='456.qq.com
+			- SMTP服务器
+				- 腾讯的是smtp.qq.com
+				- 服务器初始化srv=smtplib.SMTP_SSL(smtp_src.encode(),465)
+					- 服务器地址编码
+					- 端口
+				- 邮箱登入srv.login(from_addr,from_pwd)
+				- 发送的内容srv.sendmail(from_addr,to_addr,msg.as_string())
+					- 参数
+					- 发送地址
+					- 接受地址
+					- 发送内容，转为字符串
+				- 关闭srv.quit()
+		- 发送纯文本代码
+		<pre>
+		import smtplib
+		from email.mime.text import MIMEText
+		# MIMEText参数
+		# 邮件内容
+		# MIME子类型 plain
+		# 邮件的编码格式
+		msg=MIMEText('hello world','plain','utf-8')
+		
+		# 发送email地址
+		from_addr='123@qq.com'
+		# 密码，此处用的是授权码
+		from_pwd='123'
+		# 接受人
+		to_addr='456@qq.com'
+		# 输入SMTP服务地址
+		# 腾讯的是smtp.qq.com
+		smtp_src='smtp.qq.com'
+		try:
+		    # 服务地址设置
+		    # 服务器地址编码
+		    # 端口
+		    srv=smtplib.SMTP_SSL(smtp_src.encode(),465)
+		    # 登入油箱发送
+		    srv.login(from_addr,from_pwd)
+		    # 发送邮件内容
+		    # 参数
+		    # 发送地址
+		    # 接受地址
+		    # 发送内容，转为字符串
+		    srv.sendmail(from_addr,to_addr,msg.as_string())
+		    # 关闭
+		    srv.quit()
+		except Exception as e:
+		    print(e)
+		</pre>
+		- 发送HTML格式代码
+			- 把subtype改为html
+			<pre>
+			import smtplib
+			from email.mime.text import MIMEText
+			msgStr='< div class="main" >< h6 >this is python message< /h6 >< /div >'
+			msg=MIMEText(msgStr,'html','utf-8')
+			from_addr='123@qq.com'
+			from_pwd='123'
+			to_addr='456@qq.com'
+			smtp_src='smtp.qq.com'
+			try:
+			    srv=smtplib.SMTP_SSL(smtp_src.encode(),465)
+			    srv.login(from_addr,from_pwd)
+			    srv.sendmail(from_addr,to_addr,msg.as_string())
+			    srv.quit()
+			except Exception as e:
+			    print(e)
+			</pre>
+		- 发送带附件的邮件
+			- 发送的邮件分为文本和附件
+			- 用MIMEMultipart格式构建
+			- MIMEText正文
+			- MIMEBase或是MEMEText作为附件
+			- 发送文件的方法是一样的，只是需要把附加文件和文本整合在一起
+			<pre>
+			# 构建附件使用
+			from email.mime.text import MIMEText
+			# 构建基础邮件使用
+			from email.mime.multipart import MIMEBase, MIMEMultipart
+			# 发送邮件
+			import smtplib
+			# 创建邮件
+			mail_mul = MIMEMultipart()
+			# 构建邮件正文
+			mail_text = MIMEText('hello world this is python', 'plain', 'utf-8')
+			# 把构建好的邮件文本加载到邮件中
+			mail_mul.attach(mail_text)
+			
+			# 构建附加
+			# 导入本地文件
+			with open('fileJson.json', 'rb') as f:
+			    s = f.read()
+			    # 把文件转为base64，当做文本传过去
+			    m = MIMEText(s, 'base64', 'utf-8')
+			    m["Content-Type"] = "application/octet-stream"
+			    m["Content-Disposition"] = "attachment;filename='fileJson.json'"
+			    # 把构建好的附件加载到邮件中
+			    mail_mul.attach(m)
+			
+			# 以上代码是把文本和附件整合到一起
+			
+			# 发送邮件
+			from_addr = '123@qq.com'
+			from_pwd = '123'
+			to_addr = '456@qq.com'
+			smtp_src = 'smtp.qq.com'
+			try:
+			    srv = smtplib.SMTP_SSL(smtp_src.encode(), 465)
+			    srv.login(from_addr, from_pwd)
+			    srv.sendmail(from_addr, to_addr, mail_mul.as_string())
+			    srv.quit()
+			except Exception as e:
+			    print(e)
+			</pre>
+		- 添加邮件头
+			- 发送者信息msg['From']=Header("这是python讲堂",'utf-8')
+			- 接受者信息msg['To']=Header('接受者--->','utf-8')
+			- 主题msg['Subject']=Header('这是主题','utf-8')
+			<pre>
+			from email.mime.text import MIMEText
+			import smtplib
+			# 邮件头包
+			from email.header import Header
+			
+			# 发送者
+			msg = MIMEText('thi is head', 'plain', 'utf-8')
+			msg['From'] = Header("这是python讲堂", 'utf-8')
+			
+			# 接受者
+			msg['To'] = Header('接受者--->', 'utf-8')
+			
+			# 主题
+			msg['Subject'] = Header('这是主题', 'utf-8')
+			
+			# 发送邮件
+			from_addr = '123@qq.com'
+			from_pwd = '123'
+			to_addr = '456@qq.com'
+			smtp_src = 'smtp.qq.com'
+			try:
+			    srv = smtplib.SMTP_SSL(smtp_src.encode(), 465)
+			    srv.login(from_addr, from_pwd)
+			    srv.sendmail(from_addr, to_addr, msg.as_string())
+			    srv.quit()
+			except Exception as e:
+			    print(e)
+			</pre>
+	- POP3协议接受邮件
+		- 读取文件
+		- 使用poplib下载下来原始文件
+		- 把下载下来的文件解析
+		- 用email解析成可读内容
+#### http协议 ####
+- dns解析链接的地址
+- 
 
 
 
@@ -3377,5 +3560,5 @@
 <br>
 <br>
 <hr/>
-# 课时54 0:0 #
+# 课时56 43:13 #
 <hr/>
