@@ -3488,7 +3488,343 @@
 		- 用email解析成可读内容
 #### http协议 ####
 - dns解析链接的地址
-- 
+- http代理
+#### Tkinter ####
+- GUI介绍
+	- Tkinter
+		- 图形化
+		- 引入包Tkinter
+		- 绑定是是TK GUI工具集
+	- PyGTK
+		- PyGTK是Tkinter的替代品
+	- wxPython
+		- 跨平台的GUI
+	- PyQt
+		- 跨平台
+- Tkinter
+	- 使用
+		- 使用的时候注意文件的命名不能是tkinter
+		<pre>
+		import tkinter
+		tkinter._test()
+		</pre>	
+	- hello world
+	<pre>
+	import tkinter
+	
+	# 创建图形化
+	base=tkinter.Tk()
+	
+	# 消息循环,指的是弹窗一直在执行
+	base.mainloop()
+	</pre>
+	- Tkinter常用组件
+		- 按钮
+			- Button 按钮组件
+			- RadioButton 单选框组件
+			- CheckButton 选择按钮组件
+			- Listbox 列表框组件
+		- 文本输入组件
+			- Entry 单行文本框组件
+			- Text 多行文本框组件
+			- 获取输入框的内容tkinter.Entry().get()
+		- 标签
+			- Lable 标签组件，可以显示图片和文字
+			- Message 标签组件，可以根据内容将文字换行 
+		- 菜单
+			- Menu 菜组组件
+			- MenuButton 菜单按钮组件，可以使用Menu代替
+		- 滚动条
+			- scale 滑块组件
+			- Scrollbar 滑动条组件
+		- 其他组件
+			- Canvas 画布
+			- Frame 框架组件，将多个组件编组
+			- Toplevel 创建子窗口容器组件
+			- base.geometry("500x300+x+y") 设置tkinter的宽高和x轴y轴的位置
+		- 事件
+			- 例如button
+			- base.bind("<Button-1>",fun)鼠标左键
+			- base.bind("<Button-2>",fun)鼠标中键
+			- base.bind("<Button-3>",fun)鼠标左键
+	- 使用
+		- 创建图形化
+		- 标题
+		- 标签
+		- 布局
+		- 消息循环
+		- 代码集合
+			- Label代码1
+			<pre>
+			import tkinter
+			
+			# 创建图形化
+			base = tkinter.Tk()
+			# 标题
+			base.wm_title('hello world')
+			# 创建标签
+			lb = tkinter.Label(base, text='lables')
+			# 给组件相应的布局
+			lb.pack()
+			# 消息循环,指的是弹窗一直在执行
+			base.mainloop()
+			</pre>
+			- Label代码2
+			<pre>
+			import tkinter
+			
+			# 创建图形化
+			base = tkinter.Tk()
+			# 标题
+			base.wm_title('hello world')
+			# 创建标签
+			lb1 = tkinter.Label(base, text='lables01')
+			lb2 = tkinter.Label(base, text='lables02',background='red')
+			lb3 = tkinter.Label(base, text='lables03',background='blue')
+			# 给组件相应的布局
+			lb1.pack()
+			lb2.pack()
+			lb3.pack()
+			# 消息循环,指的是弹窗一直在执行
+			base.mainloop()
+			</pre>
+			- Button代码3
+			<pre>
+			import tkinter
+			
+			# 创建lable方法
+			def show_lable():
+			    # 全局的变量，就是创建的图形化实例
+			    global base
+			    lb = tkinter.Label(base, text='this is lable', background='blue')
+			    lb.pack()
+			
+			# 创建实例化图形
+			base = tkinter.Tk()
+			# 创建按钮
+			# 参数
+			# base是实例化图形
+			# text是按钮的文字
+			# command是按钮的点击事件执行的方法
+			btn = tkinter.Button(base, text='点击我', command=show_lable)
+			# 按钮布局
+			btn.pack()
+			# 消息循环
+			base.mainloop()
+			</pre>
+		- 布局
+			- 三种方式
+				- pack按照方位布局
+				- place按照坐标布局
+				- grid网格布局
+			- pack布局
+				- 组件对象.pack()
+				- side：停靠方位，LEFT,TOP,RIGHT,BOTTOM
+				- fill:填充方式X,Y，BOTH，NONE
+				- expande:YES,NO
+				- anchor:N,E,S,W,CENTER
+				- ipady:y
+				- padx:x方向上的内边距
+				- pady:y方向上的你边距
+				<pre>
+				import tkinter
+				base=tkinter.Tk()
+				base.geometry('500x300+500+100')
+				btn=tkinter.Button(base,text='button',background='red')
+				btn.pack(side=tkinter.TOP,expand=tkinter.YES,fill=tkinter.NONE,anchor=tkinter.N)
+				base.mainloop()
+				</pre>
+			- place布局
+				- 按照坐标布局
+				- 容易导致页面混乱
+				- 分为绝对布局和相对布局
+				- 相对布局
+					- relx,rely,relheight,relwidth
+				- 绝对布局
+			- grid布局
+				- 组件对象.pack()
+				- row,column编号
+				- sticky：N,E,S,W表示上下左右
+				- 支持ipadx，padx等参数
+				- 支持rewspan,columnspan, 表示跨行跨列
+				<pre>
+				import tkinter
+				base=tkinter.Tk()
+				base.geometry('500x300+500+100')
+				# 布局
+				lb=tkinter.Label(base,text='lable')
+				# grid的绑定方式
+				lb.grid(row=0,sticky=tkinter.W)
+				# 绑定方式也可如下写法
+				tkinter.Entry(base).grid(row=0,column=1,sticky=tkinter.E)
+				# 消息循环
+				base.mainloop()
+				</pre>
+		- 消息机制
+			- 简单理解就是按钮的点击事件不直接写入到标签中，而是绑定到到标签上
+			<pre>
+			import tkinter			
+			
+			# 创建lable方法
+			def show_lable(event):
+			    # 全局的变量，就是创建的图形化实例
+			    global base
+			    lb = tkinter.Label(base, text='this is lable', background='blue', width='100')
+			    lb.pack()			
+			
+			# 创建实例化图形
+			base = tkinter.Tk()
+			base.geometry("500x300+500+0")
+			btn = tkinter.Button(base, text='点击我')
+			# 通过绑定事件
+			btn.bind('<Button-1>', show_lable)
+			# 按钮布局
+			btn.pack()
+			# 消息循环
+			base.mainloop()
+			</pre>
+			- Tkinter的绑定
+				- bind_all 全局范围的绑定
+				- bind_class接受三个参数，类名、事件、操作
+					- w.bind_class("Entry","<Control-V",my_paste)
+				- bind对单独某一个实例绑定
+				- unbind 解绑，需要一个参数，你要解绑的事件
+			- Entry
+				- 输入框，功能单一
+				- entry['show']="*"
+				<pre>
+				import tkinter
+				
+				base = tkinter.Tk()
+				base.geometry("500x300+500+100")
+				# 创建entry
+				ipt = tkinter.Entry(base)
+				ipt.grid(row=0)
+				# 输入设置
+				ipt['show'] = "*"
+				# 消息链接
+				base.mainloop()
+				</pre>
+		- 菜单
+			- 第一个Menu定义的是parent
+			- add_command添加菜单项
+				- lable指定菜单项名称
+				- command点击事件
+				- acceletor快捷键
+				- underline指定是否菜单信息下有横线
+				- menu属性执行使用哪一个作为顶级菜单
+			- 级联菜单
+				- add_cascade级联菜单
+				- add_cascade的menu属性：值名把菜单级联到那个菜单上
+				- label名称
+				- 步骤
+					- 创建父类菜单
+					- 创建子类菜单
+					- 子类菜单lable
+					- 父类菜单添加label，和下拉的菜单menu=menu。
+					- 把父类菜单绑定到图形化实例上
+				<pre>
+				import tkinter
+				
+				base = tkinter.Tk()
+				base.geometry("500x300+500+100")
+				
+				# 创建父类menuPar
+				menuPar = tkinter.Menu(base)
+				
+				# 父类下创建子类menu
+				menu = tkinter.Menu(menuPar)
+				
+				# 循环添加menu的的每一项
+				for item in ['html', 'css', 'javascript', 'python']:
+				    menu.add_command(label=item)
+				
+				# 父类
+				menuPar.add_cascade(label='HTML')
+				menuPar.add_cascade(label='CSS', menu=menu)
+				menuPar.add_cascade(label='JAVASCRIPT')
+				menuPar.add_cascade(label='PYTHON')
+				# 把创建的menu绑定到图形化实例上
+				base['menu'] = menuPar
+				
+				# 消息循环
+				base.mainloop()
+				</pre>
+		- 弹出式菜单
+			- 一般是右键弹出
+			- 调用menu的pop
+			- add_seperator分隔符
+			<pre>
+			import tkinter
+
+			base = tkinter.Tk()
+			base.geometry('500x300+500+100')
+			 
+			# 创建menu
+			menubar = tkinter.Menu(base)
+			
+			# menu中添加项
+			for x in ['html', 'css', 'javascript', 'python']:
+			    menubar.add_cascade(label=x)
+			    menubar.add_separator()
+			
+			# 图形实例化上的右键执行的事件，这里实质上设置的是菜单的位置
+			def pop(event):
+			    # 这里是绑定的菜单，event是事件，post是menubar的位置设置
+			    menubar.post(event.x_root, event.y_root)
+			
+			# 把pop方法绑定到图形实例化上
+			base.bind('<Button-3>', pop)
+			
+			# 消息循环
+			base.mainloop()
+			</pre>
+		- 画布
+			- 绘制对象
+			<pre>
+			import tkinter
+
+			# 创建图形实例化
+			base = tkinter.Tk()
+			
+			# 创建画布
+			cvs = tkinter.Canvas(base, width=300, height=200)
+			cvs.pack()
+			
+			# 划线
+			cvs.create_line(23, 23, 100, 100)
+			cvs.create_line(100, 100, 50, 0)
+			
+			# 文字的
+			cvs.create_text(56, 67, text='hello world')
+			
+			# 消息循环
+			base.mainloop()
+			</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3560,5 +3896,5 @@
 <br>
 <br>
 <hr/>
-# 课时56 43:13 #
+# 课时59 0:0:0 #
 <hr/>
