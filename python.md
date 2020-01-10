@@ -3801,12 +3801,100 @@
 			# 消息循环
 			base.mainloop()
 			</pre>
-
-
-
-
-
-
+#### 爬虫 ####
+- 介绍
+	- 通用爬虫
+	- 专用爬虫，python指的是专用爬虫
+- 爬虫包
+	- python2.x
+		- urlilb,urlilb2,urlilb3,httplib,httplib2,requests
+	- python3.x
+		- urlilb,urlilb3,httplib2,requests
+	- python3.x主用
+		- urllib.request:打开和读取urls
+		- urllib.error常见的错误，用try
+		- urllib.parse包含url的方法
+		- urllib.robotparser 解析robots.txt文件
+	- 使用方法
+		<pre>
+		from urllib import request
+		import requests
+		import gzip
+		# 打开相应的url
+		url = 'https://sou.zhaopin.com/?jl=702&kw=python&kt=3'
+		res = request.urlopen(url)
+		# 读取网页内容
+		html = res.read()
+		print(html.decode("utf-8"))
+		</pre>
+		- 编码问题
+			- chardet包
+			- chardet.detect(html)
+			- html.decode(cs.get("encoding","utf-8"))
+			<pre>
+			import urllib 
+			import chardet
+			# 打开相应的url
+			url = 'https://jobs.zhaopin.com/CC258072487J00107019114.html'
+			res = urllib.request.urlopen(url)
+			# 读取网页内容
+			html = res.read()
+			# 检测编码格式
+			cs=chardet.detect(html)
+			print(cs)
+			html=html.decode(cs.get("encoding","utf-8"))
+			print(html)
+			</pre>
+		- urlopen()
+			- geturl()返回请求的url
+			- info请求返回对象的meta信息
+			- getcode返回的http code
+			<pre>
+			import urllib
+			import chardet
+			# 打开相应的url
+			url = 'https://jobs.zhaopin.com/CC258072487J00107019114.htm'
+			res = urllib.request.urlopen(url)
+			print(type(res))
+			print(res.geturl())
+			print(res.info())
+			print(res.getcode())
+			</pre>
+		- request.data的使用
+			- 访问方法
+				- get
+					- 参数访问
+					- 用parse编码后访问
+					- get方法需要把路径转化为可识别的路径
+				<pre>
+				from urllib import request, parse
+				import chardet
+				
+				# 打开相应的url
+				url = 'https://www.baidu.com/s?'
+				# 获取输入的信息
+				ipt = input("src:")
+				par = {
+				    "wd": ipt
+				}
+				# url转码
+				par = parse.urlencode(par)
+				openSrc = url + par
+				print(openSrc)
+				# 把转码后的信息传入打开
+				res = request.urlopen(url)
+				# 读取网页内容
+				html = res.read()
+				# 检测编码格式
+				cs = chardet.detect(html)
+				html = html.decode(cs.get("encoding", "utf-8"))
+				print(html)
+				</pre>
+				- post
+					- 一般往服务器传递参数
+					- 需要更改请求头等信息
+				
+ 
 
 
 
@@ -3896,5 +3984,5 @@
 <br>
 <br>
 <hr/>
-# 课时59 0:0:0 #
+# 课时64 13:52 #
 <hr/>
