@@ -3938,9 +3938,86 @@
 				except Exception as e:
 				    print(e)
 				</pre>
+			- UserAgent
+				- 伪装身份，用户代理，访问者身份
+				- 使用方法一
+				<pre>
+				from urllib import request,parse,error
+				url='https://www.baidu.com'
+				headers = {
+				    "user-agent": " Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+				}
 				
- 
-
+				try:
+				    res = request.Request(url,headers=headers)
+				    req = request.urlopen(res)
+				    html = req.read().decode()
+				    print(html)
+				except error.HTTPError as e:
+				    print(e)
+				except error.URLError as e:
+				    print(e)
+				except Exception as e:
+				    print(e)
+				</pre>
+				- 使用方法二
+				<pre>
+				from urllib import request,parse,error
+				url='https://www.baidu.com'
+				
+				try:
+				    res = request.Request(url)
+				    res.add_header("user-agent"," Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36")
+				    req = request.urlopen(res)
+				    html = req.read().decode()
+				    print(html)
+				except error.HTTPError as e:
+				    print(e)
+				except error.URLError as e:
+				    print(e)
+				except Exception as e:
+				    print(e)
+				</pre>
+ 			- ProyHandler代理服务器
+	 			- 伪装身份，地址，使用代理ip
+	 			- 获取代理服务器
+		 			- www.xicidaili.com
+		 			- www.goubanjia.com
+		 		- 基本使用步骤
+			 		- 设置代理地址
+			 		- 创建proxyHandler
+			 		- 创建Opener
+			 		- 安装Opener
+			 		<pre>
+					from urllib import request,parse,error
+					url='http://www.baidu.com'
+					# 设置代理
+					proxy={
+					    'http':'218.60.8.99:3129'
+					}
+					# 创建ProxyHandler
+					proxy_hander=request.ProxyHandler(proxy)
+					# 创建Opener
+					opener=request.build_opener(proxy_hander)
+					# 安装Opener
+					request.install_opener(opener)
+					
+					try:
+					    res = request.Request(url)
+					    req = request.urlopen(res)
+					    html = req.read().decode()
+					    print(html)
+					except error.HTTPError as e:
+					    print(e)
+					except error.URLError as e:
+					    print(e)
+					except Exception as e:
+					    print(e)
+					</pre>
+			- cookie，session
+				- cookie和session进行前后端的存储验证
+				- 一个cookie的大小不能大于4k
+			 
 
 
 
