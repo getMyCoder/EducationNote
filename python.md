@@ -4017,7 +4017,83 @@
 			- cookie，session
 				- cookie和session进行前后端的存储验证
 				- 一个cookie的大小不能大于4k
-			 
+				- 爬取页面并保存本地
+				<pre>
+				from urllib import request
+				if __name__ == '__main__':
+				    url='http://www.baidu.com'
+				    res=request.urlopen(url)
+				    req=res.read().decode()
+				    print(req)
+				    with open('req.html','w',encoding='utf-8')  as f:
+				        f.write(req)
+				</pre>
+				- 在请求头中加上Cookie
+				<pre>
+				from urllib import request
+				if __name__ == '__main__':
+				    url='http://mail.qq.com/cgi-bin/frame_html?sid=jsbHoyaCwoiWEE8R&r=d957cd237d4e86fcccb28bd2c62b9e01'
+				    headers={
+				        'Cookie':'tvfe_boss_uuid=f4af3cf30040013b; pgv_pvid=9709722419; pgv_pvi=7269703680; RK=OqYBUdd9Ee; ptcz=2251396d33ad96d827b425c2fd061f81290fb2cd5fc02ef5b77a8cebb41238ca; pac_uid=0_c14dee6c0ba72; qm_logintype=qq; webp=1; pgv_info=ssid=s3541001700; pgv_si=s3813025792; p_uin=o1598719304; wimrefreshrun=0&; qm_flag=0; qqmail_alias=1598719304@qq.com; qm_domain=https://mail.qq.com; foxacc=1598719304&0; uin=o1598719304; skey=@eFAsiyWrt; pt4_token=OXTfMdvxlzxlyEAq8XGppltWdB*phNP-hRdYs0mqdOQ_; p_skey=1TAznL5Fg4ljWEkATUe5Q5V252rQ-ptv-D5ScbIDOcg_; sid=1598719304&ce64003d172250997442cccf93d55ddb,qMVRBem5MNUZnNGxqV0VrQVRVZTVRNVYyNTJyUS1wdHYtRDVTY2JJRE9jZ18.; qm_username=1598719304; qm_lg=qm_lg; qm_ptsk=1598719304&@eFAsiyWrt; ssl_edition=sail.qq.com; edition=mail.qq.com; qm_loginfrom=1598719304&wpt; username=1598719304&1598719304; new_mail_num=1598719304&24; CCSHOW=000000'
+				    }
+				    res=request.Request(url,headers=headers)
+				    req=request.urlopen(res)
+				    html=req.read().decode('gb18030')
+				    print(html)
+				    with open('req.html','w',encoding='utf-8')  as f:
+				        f.write(html)
+				</pre>
+			- http包含以下cookie方法
+				- CookieJar
+					- 管理存储cookie
+				- FileCookieJar(filename,delayload=None,policy=None)
+					- 文件保存cookie
+				- MozillaCookiejar(filename,delayload=None,policy=None)
+					- 创建mocilla浏览器cookie.text兼容写法
+				- LwCookieJar(filename,delayload=None,policy=None)
+				- 用法
+					- 使用cookie登入
+						- 通过用户名和密码登入
+						- 自动提取出来的cookie进行登入  
+						<pre>
+						from urllib import request,parse
+						from http import cookiejar
+						# 创建cookie的实例
+						cookie=cookiejar.CookieJar()
+						# 创建cookie管理器
+						cookie_handler=request.HTTPCookieProcessor(cookie)
+						# 创建http的管理器
+						http_handler=request.HTTPHandler()
+						# 生成http的管理器
+						https_handler=request.HTTPHandler()
+						# 创建请求管理器
+						opener=request.build_opener(http_handler,https_handler,cookie_handler)
+						# 登入验证
+						def login():
+						    # 用户信息提交的地址，用户名和密码
+						    url='https://login.sina.com.cn/signup/signin.php'
+						    data={
+						        'username':"123",
+						        'password':'153'
+						    }
+						    # 把用户信息转为url可读取的
+						    data=parse.urlencode(data)
+						    req=request.Request(url,data=data.encode('utf-8'))
+						    # 使用opener发起请求
+						    rsp=opener.open(req)
+						    print(rsp)
+						def getHttp():
+						    # 要爬取的页面
+						    url='http://weibo.com/'
+						    # 使用cookie登入
+						    res=opener.open(url)
+						    html=res.read().decode()
+						    with open('sina.html','w',encoding='utf-8') as f:
+						        f.write(html)
+						if __name__ == '__main__':
+						    login()
+						    getHttp()
+						</pre>
 
 
 
@@ -4106,5 +4182,5 @@
 <br>
 <br>
 <hr/>
-# 课时64 13:52 #
+# 课时72   #
 <hr/>
